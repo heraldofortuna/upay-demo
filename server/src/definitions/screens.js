@@ -1,0 +1,792 @@
+/**
+ * Definiciones de pantallas en formato Server-Driven UI (SDUI)
+ * Cada pantalla define su estructura UI de manera declarativa
+ */
+
+export const screenDefinitions = {
+  // Pantalla de inicialización
+  Initializing: {
+    id: 'Initializing',
+    type: 'screen',
+    layout: {
+      type: 'container',
+      style: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      children: [
+        {
+          type: 'container',
+          props: {
+            style: {
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+            children: [
+              {
+                type: 'loader',
+                props: {
+                  size: 'large',
+                },
+              },
+              {
+                type: 'text',
+                props: {
+                  text: 'Iniciando el uPOS',
+                  style: {
+                    marginTop: 16,
+                    fontSize: 16,
+                    color: '#333333',
+                    fontWeight: '500',
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    actions: [
+      {
+        id: 'initialize',
+        type: 'api_call',
+        method: 'POST',
+        endpoint: '/api/pos/initialize',
+        onSuccess: {
+          type: 'conditional',
+          condition: {
+            field: 'response.isLinked',
+            operator: 'equals',
+            value: true,
+          },
+          then: {
+            type: 'navigate',
+            screen: 'Waiting',
+          },
+          else: {
+            type: 'navigate',
+            screen: 'LinkingStep1',
+          },
+        },
+        onError: {
+          type: 'navigate',
+          screen: 'Error',
+          params: {
+            message: 'Error al inicializar el POS. Por favor, intenta nuevamente.',
+          },
+        },
+      },
+    ],
+  },
+
+  // Pantalla de espera
+  Waiting: {
+    id: 'Waiting',
+    type: 'screen',
+    layout: {
+      type: 'container',
+      style: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        padding: 24,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      children: [
+        {
+          type: 'text',
+          props: {
+            text: 'Listo para el próximo cobro',
+            style: {
+              fontSize: 24,
+              fontWeight: '600',
+              color: '#333333',
+              textAlign: 'center',
+              marginBottom: 16,
+            },
+          },
+        },
+        {
+          type: 'text',
+          props: {
+            text: 'Acercá una tarjeta de crédito o débito',
+            style: {
+              fontSize: 18,
+              color: '#666666',
+              textAlign: 'center',
+              marginTop: 8,
+            },
+          },
+        },
+      ],
+    },
+    hooks: [
+      {
+        type: 'nfc_detection',
+        enabled: true,
+        onDetect: {
+          type: 'navigate',
+          screen: 'ReadingCard',
+        },
+      },
+    ],
+  },
+
+  // Paso 1 de vinculación
+  LinkingStep1: {
+    id: 'LinkingStep1',
+    type: 'screen',
+    layout: {
+      type: 'container',
+      style: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        padding: 24,
+      },
+      children: [
+        {
+          type: 'container',
+          props: {
+            style: {
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+            children: [
+              {
+                type: 'text',
+                props: {
+                  text: '¡Te damos la bienvenida a tu uPOS!',
+                  style: {
+                    fontSize: 28,
+                    fontWeight: '700',
+                    color: '#333333',
+                    textAlign: 'center',
+                    marginBottom: 16,
+                  },
+                },
+              },
+              {
+                type: 'text',
+                props: {
+                  text: 'Llegó el nuevo aliado para tu negocio.\nDeslizá para conocer más.',
+                  style: {
+                    fontSize: 18,
+                    color: '#666666',
+                    textAlign: 'center',
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          type: 'container',
+          props: {
+            style: {
+              paddingBottom: 24,
+            },
+            children: [
+              {
+                type: 'button',
+                props: {
+                  title: 'Comenzar',
+                  variant: 'primary',
+                  onPress: {
+                    type: 'navigate',
+                    screen: 'LinkingStep2',
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+
+  // Paso 2 de vinculación
+  LinkingStep2: {
+    id: 'LinkingStep2',
+    type: 'screen',
+    layout: {
+      type: 'container',
+      style: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        padding: 24,
+      },
+      children: [
+        {
+          type: 'container',
+          props: {
+            style: {
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+            children: [
+              {
+                type: 'text',
+                props: {
+                  text: 'Vinculá una caja para operar',
+                  style: {
+                    fontSize: 28,
+                    fontWeight: '700',
+                    color: '#333333',
+                    textAlign: 'center',
+                    marginBottom: 16,
+                  },
+                },
+              },
+              {
+                type: 'text',
+                props: {
+                  text: 'Solo tenés que ingresar el código de seguridad en una caja de tu comercio.',
+                  style: {
+                    fontSize: 18,
+                    color: '#666666',
+                    textAlign: 'center',
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          type: 'container',
+          props: {
+            style: {
+              paddingBottom: 24,
+            },
+            children: [
+              {
+                type: 'button',
+                props: {
+                  title: 'Comenzar',
+                  variant: 'primary',
+                  onPress: {
+                    type: 'navigate',
+                    screen: 'LinkingStep3',
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+
+  // Paso 3 de vinculación
+  LinkingStep3: {
+    id: 'LinkingStep3',
+    type: 'screen',
+    layout: {
+      type: 'container',
+      style: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        padding: 24,
+      },
+      children: [
+        {
+          type: 'container',
+          props: {
+            style: {
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+            children: [
+              {
+                type: 'text',
+                props: {
+                  text: '¡Y listo! Comenzá a transformar tus cobros',
+                  style: {
+                    fontSize: 28,
+                    fontWeight: '700',
+                    color: '#333333',
+                    textAlign: 'center',
+                    marginBottom: 16,
+                  },
+                },
+              },
+              {
+                type: 'text',
+                props: {
+                  text: 'Cuando lo vincules, tu uPOS podrá aceptar tarjetas, billeteras virtuales y apps bancarias.',
+                  style: {
+                    fontSize: 18,
+                    color: '#666666',
+                    textAlign: 'center',
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          type: 'container',
+          props: {
+            style: {
+              paddingBottom: 24,
+            },
+            children: [
+              {
+                type: 'button',
+                props: {
+                  title: 'Comenzar',
+                  variant: 'primary',
+                  onPress: {
+                    type: 'api_call',
+                    method: 'GET',
+                    endpoint: '/api/pos/otp',
+                    onSuccess: {
+                      type: 'navigate',
+                      screen: 'OtpScreen',
+                    },
+                    onError: {
+                      type: 'navigate',
+                      screen: 'Error',
+                      params: {
+                        message: 'Error al obtener el código de seguridad. Por favor, intenta nuevamente.',
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+
+  // Pantalla OTP
+  OtpScreen: {
+    id: 'OtpScreen',
+    type: 'screen',
+    layout: {
+      type: 'container',
+      style: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        padding: 24,
+      },
+      children: [
+        {
+          type: 'container',
+          props: {
+            style: {
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+            children: [
+              {
+                type: 'text',
+                props: {
+                  text: 'Ingresá el código en la caja que quieras vincular',
+                  style: {
+                    fontSize: 28,
+                    fontWeight: '700',
+                    color: '#333333',
+                    textAlign: 'center',
+                    marginBottom: 16,
+                  },
+                },
+              },
+              {
+                type: 'text',
+                props: {
+                  text: 'Código de seguridad',
+                  style: {
+                    fontSize: 18,
+                    color: '#666666',
+                    marginBottom: 24,
+                  },
+                },
+              },
+              {
+                type: 'text',
+                props: {
+                  text: '{{otp}}',
+                  style: {
+                    fontSize: 48,
+                    fontWeight: '700',
+                    color: '#007AFF',
+                    letterSpacing: 8,
+                    marginBottom: 16,
+                  },
+                  condition: {
+                    field: 'isLoading',
+                    operator: 'equals',
+                    value: false,
+                    then: { text: '{{otp}}' },
+                    else: { text: '---' },
+                  },
+                },
+              },
+              {
+                type: 'text',
+                props: {
+                  text: 'El código vence en {{timeLeft}} segundos',
+                  style: {
+                    fontSize: 14,
+                    color: '#999999',
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          type: 'container',
+          props: {
+            style: {
+              paddingBottom: 24,
+              gap: 12,
+            },
+            children: [
+              {
+                type: 'button',
+                props: {
+                  title: 'Continuar',
+                  variant: 'primary',
+                  disabled: {
+                    field: 'otp',
+                    operator: 'notExists',
+                  },
+                  onPress: {
+                    type: 'navigate',
+                    screen: 'Linking',
+                    params: {
+                      otp: '{{otp}}',
+                    },
+                  },
+                },
+              },
+              {
+                type: 'button',
+                props: {
+                  title: 'Cancelar',
+                  variant: 'secondary',
+                  onPress: {
+                    type: 'navigate',
+                    screen: 'LinkingStep1',
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    actions: [
+      {
+        id: 'fetchOtp',
+        type: 'api_call',
+        method: 'GET',
+        endpoint: '/api/pos/otp',
+        onSuccess: {
+          type: 'update_state',
+          state: {
+            otp: 'response.otp',
+            timeLeft: 'response.expiresIn',
+            isLoading: false,
+          },
+        },
+        onError: {
+          type: 'navigate',
+          screen: 'Error',
+          params: {
+            message: 'Error al obtener el código de seguridad. Por favor, intenta nuevamente.',
+          },
+        },
+      },
+    ],
+    hooks: [
+      {
+        type: 'timer',
+        interval: 1000,
+        condition: {
+          field: 'timeLeft',
+          operator: 'greaterThan',
+          value: 0,
+        },
+        onTick: {
+          type: 'update_state',
+          state: {
+            timeLeft: '{{timeLeft}} - 1',
+          },
+        },
+        onExpire: {
+          type: 'trigger_action',
+          actionId: 'fetchOtp',
+        },
+      },
+    ],
+  },
+
+  // Pantalla de vinculación en proceso
+  Linking: {
+    id: 'Linking',
+    type: 'screen',
+    layout: {
+      type: 'container',
+      style: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      children: [
+        {
+          type: 'container',
+          props: {
+            style: {
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+            children: [
+              {
+                type: 'loader',
+                props: {
+                  size: 'large',
+                },
+              },
+              {
+                type: 'text',
+                props: {
+                  text: 'Estamos vinculando el uPOS a la caja',
+                  style: {
+                    marginTop: 16,
+                    fontSize: 16,
+                    color: '#333333',
+                    fontWeight: '500',
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    actions: [
+      {
+        id: 'link',
+        type: 'api_call',
+        method: 'POST',
+        endpoint: '/api/pos/link',
+        body: {
+          otp: '123',
+        },
+        onSuccess: {
+          type: 'conditional',
+          condition: {
+            field: 'response.success',
+            operator: 'equals',
+            value: true,
+          },
+          then: {
+            type: 'navigate',
+            screen: 'Waiting',
+          },
+          else: {
+            type: 'navigate',
+            screen: 'Error',
+            params: {
+              message: '{{response.message}}',
+            },
+          },
+        },
+        onError: {
+          type: 'navigate',
+          screen: 'Error',
+          params: {
+            message: 'Error al vincular el uPOS. Por favor, intenta nuevamente.',
+          },
+        },
+      },
+    ],
+  },
+
+  // Pantalla de lectura de tarjeta
+  ReadingCard: {
+    id: 'ReadingCard',
+    type: 'screen',
+    layout: {
+      type: 'container',
+      style: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        padding: 24,
+      },
+      children: [
+        {
+          type: 'container',
+          props: {
+            style: {
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+            children: [
+              {
+                type: 'text',
+                props: {
+                  text: '💳',
+                  style: {
+                    fontSize: 64,
+                    marginBottom: 24,
+                  },
+                },
+              },
+              {
+                type: 'text',
+                props: {
+                  text: 'Tarjeta detectada',
+                  style: {
+                    fontSize: 28,
+                    fontWeight: '700',
+                    color: '#333333',
+                    marginBottom: 32,
+                    textAlign: 'center',
+                  },
+                },
+              },
+              {
+                type: 'container',
+                props: {
+                  condition: {
+                    field: 'cardData',
+                    operator: 'exists',
+                  },
+                  style: {
+                    width: '100%',
+                    backgroundColor: '#F5F5F5',
+                    borderRadius: 12,
+                    padding: 20,
+                    marginTop: 16,
+                  },
+                  children: [
+                    {
+                      type: 'text',
+                      props: {
+                        text: 'Tipo: {{cardData.cardType}}',
+                        style: {
+                          fontSize: 18,
+                          fontWeight: '600',
+                          color: '#333333',
+                          marginTop: 12,
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    hooks: [
+      {
+        type: 'delay',
+        duration: 2000,
+        onComplete: {
+          type: 'update_state',
+          state: {
+            isReading: false,
+          },
+        },
+      },
+    ],
+  },
+
+  // Pantalla de error
+  Error: {
+    id: 'Error',
+    type: 'screen',
+    layout: {
+      type: 'container',
+      style: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        padding: 24,
+      },
+      children: [
+        {
+          type: 'container',
+          props: {
+            style: {
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+            children: [
+              {
+                type: 'text',
+                props: {
+                  text: '⚠️',
+                  style: {
+                    fontSize: 64,
+                    marginBottom: 24,
+                  },
+                },
+              },
+              {
+                type: 'text',
+                props: {
+                  text: 'Error',
+                  style: {
+                    fontSize: 28,
+                    fontWeight: '700',
+                    color: '#333333',
+                    marginBottom: 16,
+                  },
+                },
+              },
+              {
+                type: 'text',
+                props: {
+                  text: '{{message}}',
+                  style: {
+                    fontSize: 16,
+                    color: '#666666',
+                    textAlign: 'center',
+                    lineHeight: 24,
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          type: 'container',
+          props: {
+            style: {
+              paddingBottom: 24,
+            },
+            children: [
+              {
+                type: 'button',
+                props: {
+                  title: 'Reintentar',
+                  variant: 'primary',
+                  onPress: {
+                    type: 'navigate',
+                    screen: 'Initializing',
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+};
