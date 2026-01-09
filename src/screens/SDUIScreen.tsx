@@ -9,6 +9,8 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { SDUIRenderer, SDUIDefinition } from '../engine/SDUIRenderer';
 import { bffClient, ApiResponse } from '../services/bffClient';
+import { getLocalScreenDefinition } from '../services/localScreenService';
+import { apiService } from '../services/api';
 
 type SDUIScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SDUIScreen'>;
 type SDUIScreenRouteProp = RouteProp<RootStackParamList, 'SDUIScreen'>;
@@ -71,6 +73,17 @@ export const SDUIScreen: React.FC<Props> = ({ navigation, route }) => {
     loadScreenDefinition();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screenId]);
+
+  // Recargar definición cuando la pantalla vuelve al foco (para ver cambios del servidor)
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('[SDUIScreen] Screen focused, reloading definition');
+      loadScreenDefinition();
+    });
+
+    return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigation, screenId]);
 
   // Ejecutar acciones automáticas al montar (solo una vez)
   useEffect(() => {
@@ -159,8 +172,22 @@ export const SDUIScreen: React.FC<Props> = ({ navigation, route }) => {
       setIsLoading(true);
       setError(null);
       console.log('[SDUIScreen] Fetching definition for:', screenId);
+      
+      // Determinar si usar definiciones locales (OTA) o del servidor (SDUI)
+      // EXPO_PUBLIC_APP_MODE es la variable que se configura en los scripts
+      const appMode = process.env.EXPO_PUBLIC_APP_MODE || 'sdui';
+      const useLocalDefinitions = appMode === 'ota';
+      
       // Usar el estado actual (que puede estar limpio si cambió el screenId)
-      const def = await bffClient.getScreenDefinition(screenId, stateRef.current);
+      let def: SDUIDefinition;
+      if (useLocalDefinitions) {
+        console.log('[SDUIScreen] Using local definitions (OTA mode)');
+        def = await getLocalScreenDefinition(screenId, stateRef.current);
+      } else {
+        console.log('[SDUIScreen] Using BFF definitions (SDUI mode)');
+        def = await bffClient.getScreenDefinition(screenId, stateRef.current);
+      }
+      
       console.log('[SDUIScreen] Definition loaded:', def?.id);
       setDefinition(def);
     } catch (err: any) {
@@ -179,10 +206,26 @@ export const SDUIScreen: React.FC<Props> = ({ navigation, route }) => {
         const method = action.method || 'GET';
         const body = action.body ? interpolateObject(action.body, state) : undefined;
 
-        const response = await bffClient.callApi<ApiResponse>(
-          action.endpoint,
-          { method, body }
-        );
+        // Determinar qué servicio usar según el modo
+        const appMode = process.env.EXPO_PUBLIC_APP_MODE || 'sdui';
+        const useLocalApi = appMode === 'ota';
+        
+        let response: ApiResponse;
+        if (useLocalApi) {
+          // Modo OTA: usar apiService (mocks o API directa)
+          console.log('[SDUIScreen] Using local API service (OTA mode)');
+          response = await apiService.callApi<ApiResponse>(
+            action.endpoint,
+            { method, body }
+          );
+        } else {
+          // Modo SDUI: usar bffClient (servidor BFF)
+          console.log('[SDUIScreen] Using BFF API service (SDUI mode)');
+          response = await bffClient.callApi<ApiResponse>(
+            action.endpoint,
+            { method, body }
+          );
+        }
 
         // Actualizar estado con respuesta
         if (action.onSuccess) {

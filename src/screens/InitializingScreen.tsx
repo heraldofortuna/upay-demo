@@ -3,6 +3,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { apiService } from '../services/api';
 import { Loader } from '../components';
+import { textService } from '../services/textService';
 
 type InitializingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -26,7 +27,7 @@ export const InitializingScreen: React.FC<Props> = ({ navigation }) => {
         }
       } catch (error) {
         navigation.replace('Error', {
-          message: 'Error al inicializar el POS. Por favor, intenta nuevamente.',
+          message: textService.getError('initialize'),
         });
       }
     };
@@ -34,5 +35,6 @@ export const InitializingScreen: React.FC<Props> = ({ navigation }) => {
     initialize();
   }, [navigation]);
 
-  return <Loader text="Iniciando el uPOS" />;
+  const loaderText = textService.getScreenText('Initializing', 'loaderText');
+  return <Loader text={loaderText} />;
 };

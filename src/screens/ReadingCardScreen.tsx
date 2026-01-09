@@ -4,6 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList, CardData } from '../types';
 import { Loader } from '../components';
+import { textService } from '../services/textService';
 
 type ReadingCardScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -43,7 +44,8 @@ export const ReadingCardScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [cardData]);
 
   if (isReading) {
-    return <Loader text="Leyendo tarjeta..." />;
+    const loaderText = textService.getScreenText('ReadingCard', 'loaderText');
+    return <Loader text={loaderText} />;
   }
 
   return (

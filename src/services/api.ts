@@ -90,6 +90,30 @@ class ApiService {
       body: JSON.stringify({ otp } as LinkRequest),
     });
   }
+
+  /**
+   * Método genérico para llamadas API (compatible con bffClient.callApi)
+   * Usado en modo OTA cuando no hay servidor BFF
+   */
+  async callApi<T = any>(
+    endpoint: string,
+    options: {
+      method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+      body?: any;
+      headers?: Record<string, string>;
+    } = {}
+  ): Promise<T> {
+    // Normalizar el endpoint (remover /api si está presente)
+    const normalizedEndpoint = endpoint.startsWith('/api') 
+      ? endpoint.replace('/api', '') 
+      : endpoint;
+    
+    return this.request<T>(normalizedEndpoint, {
+      method: options.method || 'GET',
+      headers: options.headers,
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+  }
 }
 
 export const apiService = new ApiService();

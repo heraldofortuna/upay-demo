@@ -1,12 +1,43 @@
-# uPay Demo - Server-Driven UI (SDUI) + Backend for Frontend (BFF)
+# uPay Demo - SDUI + BFF y OTA
 
-Aplicación React Native con arquitectura **Server-Driven UI (SDUI)** y **Backend for Frontend (BFF)**. El servidor define dinámicamente la estructura y contenido de las pantallas mediante definiciones JSON, y el frontend las renderiza automáticamente.
+Aplicación React Native que soporta **dos modos de ejecución**:
+
+1. **SDUI + BFF**: Server-Driven UI con Backend for Frontend - El servidor define dinámicamente las pantallas mediante JSON
+2. **OTA**: Over-The-Air - Aplicación tradicional con actualizaciones OTA sin pasar por las tiendas
+
+Ambas aplicaciones conviven en el mismo repositorio y puedes elegir cuál ejecutar.
+
+---
+
+## 🚀 Inicio Rápido
+
+### Ejecutar App SDUI (con BFF)
+
+```bash
+# Desarrollo
+npm run dev:sdui
+
+# O en Android
+npm run dev:android:sdui
+```
+
+### Ejecutar App OTA
+
+```bash
+# Desarrollo
+npm run start:ota
+
+# O en Android
+npm run dev:android:ota
+```
 
 ---
 
 ## 📋 Tabla de Contenidos
 
-- [Arquitectura](#-arquitectura)
+- [Modos de Ejecución](#-modos-de-ejecución)
+- [Arquitectura SDUI](#-arquitectura-sdui)
+- [Arquitectura OTA](#-arquitectura-ota)
 - [Flujo de la Aplicación](#-flujo-de-la-aplicación)
 - [Cómo Funciona SDUI](#-cómo-funciona-sdui)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
@@ -14,10 +45,63 @@ Aplicación React Native con arquitectura **Server-Driven UI (SDUI)** y **Backen
 - [Uso](#-uso)
 - [Desarrollo](#-desarrollo)
 - [API Admin](#-api-admin)
+- [Guía OTA](#-guía-ota)
 
 ---
 
-## 🏗️ Arquitectura
+## 🎯 Modos de Ejecución
+
+Este proyecto soporta dos modos de ejecución que puedes alternar fácilmente:
+
+### 1. SDUI + BFF (Server-Driven UI)
+
+**Características:**
+- ✅ Pantallas definidas dinámicamente desde el servidor (JSON)
+- ✅ Cambios instantáneos sin actualizar la app
+- ✅ Requiere servidor BFF corriendo
+- ✅ Ideal para A/B testing y personalización
+
+**Cuándo usar:**
+- Necesitas cambiar UI frecuentemente
+- Quieres personalización por usuario/región
+- Tienes control del servidor backend
+
+**Ejecutar:**
+```bash
+npm run dev:sdui
+```
+
+### 2. OTA (Over-The-Air)
+
+**Características:**
+- ✅ Pantallas tradicionales (componentes React Native)
+- ✅ Actualizaciones OTA sin pasar por tiendas
+- ✅ No requiere servidor (usa APIs directas)
+- ✅ Más control sobre el código
+
+**Cuándo usar:**
+- Prefieres código tradicional
+- Quieres actualizaciones OTA rápidas
+- No necesitas cambios instantáneos de UI
+
+**Ejecutar:**
+```bash
+npm run start:ota
+```
+
+### Comparación
+
+| Característica | SDUI + BFF | OTA |
+|----------------|------------|-----|
+| **Fuente de UI** | Servidor (JSON) | Código embebido |
+| **Actualizaciones** | Instantáneas | Requiere build OTA |
+| **Servidor requerido** | Sí (BFF) | No (solo APIs) |
+| **Flexibilidad UI** | Muy alta | Media |
+| **Complejidad** | Mayor | Menor |
+
+---
+
+## 🏗️ Arquitectura SDUI
 
 ### Conceptos Clave
 
@@ -86,6 +170,63 @@ Capa intermedia (Node.js + Express) que adapta los servicios backend para las ne
 │  └──────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## 🏗️ Arquitectura OTA
+
+### Diagrama de Arquitectura OTA
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    DISPOSITIVO MÓVIL                        │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │         React Native App (Frontend OTA)              │  │
+│  │  ┌────────────────────────────────────────────────┐  │  │
+│  │  │  OTAWrapper                                    │  │  │
+│  │  │  - Verifica actualizaciones OTA                │  │  │
+│  │  │  - Descarga y aplica actualizaciones          │  │  │
+│  │  └────────────────────────────────────────────────┘  │  │
+│  │  ┌────────────────────────────────────────────────┐  │  │
+│  │  │  AppNavigatorOTA                                │  │  │
+│  │  │  - Pantallas tradicionales (componentes)         │  │  │
+│  │  │  - InitializingScreen, OtpScreen, etc.         │  │  │
+│  │  └────────────────────────────────────────────────┘  │  │
+│  │  ┌────────────────────────────────────────────────┐  │  │
+│  │  │  apiService (Cliente HTTP)                      │  │  │
+│  │  │  - POST /api/pos/initialize                     │  │  │
+│  │  │  - GET /api/pos/otp                             │  │  │
+│  │  │  - POST /api/pos/link                           │  │  │
+│  │  └────────────────────────────────────────────────┘  │  │
+│  └──────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+                            ↕ HTTP/JSON
+┌─────────────────────────────────────────────────────────────┐
+│              BACKEND API (Opcional)                          │
+│  - APIs de negocio directas                                 │
+│  - No requiere BFF                                          │
+└─────────────────────────────────────────────────────────────┘
+                            ↕ OTA Updates
+┌─────────────────────────────────────────────────────────────┐
+│              EXPO UPDATES SERVER                             │
+│  - Almacena actualizaciones OTA                              │
+│  - Distribuye actualizaciones a dispositivos                │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Componentes OTA
+
+- **OTAWrapper**: Componente que envuelve la app y verifica actualizaciones
+- **otaService**: Servicio para manejar actualizaciones OTA
+- **useOTAUpdates**: Hook React para usar actualizaciones en componentes
+- **AppNavigatorOTA**: Navegador con pantallas tradicionales
+
+### Flujo de Actualización OTA
+
+1. App inicia → OTAWrapper se monta
+2. Verifica actualizaciones automáticamente
+3. Si hay actualización → Descarga y aplica
+4. Reinicia la app con la nueva versión
 
 ---
 
@@ -940,6 +1081,60 @@ adb reverse --list
 cd server
 npm run kill-port
 ```
+
+---
+
+## 📱 Guías OTA
+
+### Guías Disponibles
+
+1. **[📖 Guía Completa de OTA](./OTA_GUIDE.md)**
+   - Configuración de Expo Updates
+   - Arquitectura OTA
+   - Debugging y troubleshooting
+   - Mejores prácticas
+
+2. **[📝 Guía: Hacer Cambios con OTA](./GUIA_CAMBIOS_OTA.md)** ⭐ **RECOMENDADO**
+   - Cómo hacer cambios (texto, estilos, lógica)
+   - Proceso completo paso a paso
+   - Ejemplos prácticos
+   - Flujo de trabajo recomendado
+
+3. **[📝 Guía: Textos Externos con OTA](./GUIA_TEXTOS_EXTERNOS_OTA.md)** ⭐⭐ **MUY RECOMENDADO**
+   - **Cambiar textos SIN tocar código**
+   - Solo edita JSON y publica OTA
+   - Proceso ultra rápido (3-4 minutos)
+   - Ideal para cambios frecuentes de textos
+
+4. **[🌐 EAS Update Dashboard](./EAS_UPDATE_GUIA.md)** ⭐⭐⭐ **LO QUE BUSCABAS**
+   - **Usar EAS Update de Expo directamente**
+   - **Dashboard web de Expo** para gestionar actualizaciones
+   - Edita JSON localmente → Publica desde dashboard o CLI
+   - Sin APIs propias, usa el servicio de Expo
+   - Ideal para cambios rápidos de textos
+
+5. **[🌐 Plataforma Externa (API Propia)](./GUIA_PLATAFORMA_EXTERNA.md)**
+   - Cambiar textos desde API REST propia
+   - Textos almacenados en MongoDB
+   - Similar al Admin API de SDUI
+
+4. **[🎯 Ejemplo Práctico: Cambiar Texto](./EJEMPLO_CAMBIO_OTA.md)**
+   - Ejemplo paso a paso
+   - Cambios de texto, estilos y lógica
+   - Comandos rápidos
+
+### Inicio Rápido para Cambios
+
+```bash
+# 1. Hacer cambio en código (editar archivo)
+# 2. Probar localmente
+npm run dev:android:ota
+
+# 3. Publicar actualización
+npm run publish:ota
+```
+
+**Tiempo:** ~3-8 minutos ⚡
 
 ---
 

@@ -4,6 +4,7 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { apiService } from '../services/api';
 import { Loader } from '../components';
+import { textService } from '../services/textService';
 
 type LinkingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -29,12 +30,12 @@ export const LinkingScreen: React.FC<Props> = ({ navigation, route }) => {
           navigation.replace('Waiting');
         } else {
           navigation.replace('Error', {
-            message: response.message || 'Error al vincular el uPOS. Por favor, intenta nuevamente.',
+            message: response.message || textService.getError('link'),
           });
         }
       } catch (error) {
         navigation.replace('Error', {
-          message: 'Error al vincular el uPOS. Por favor, intenta nuevamente.',
+          message: textService.getError('link'),
         });
       }
     };
@@ -42,5 +43,6 @@ export const LinkingScreen: React.FC<Props> = ({ navigation, route }) => {
     link();
   }, [otp, navigation]);
 
-  return <Loader text="Estamos vinculando el uPOS a la caja" />;
+  const loaderText = textService.getScreenText('Linking', 'loaderText');
+  return <Loader text={loaderText} />;
 };

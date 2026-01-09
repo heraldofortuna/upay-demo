@@ -4,6 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { Button } from '../components';
 import { apiService } from '../services/api';
+import { textService } from '../services/textService';
 
 type LinkingStep3ScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -21,23 +22,21 @@ export const LinkingStep3Screen: React.FC<Props> = ({ navigation }) => {
       navigation.navigate('OtpScreen');
     } catch (error) {
       navigation.replace('Error', {
-        message: 'Error al obtener el código de seguridad. Por favor, intenta nuevamente.',
+        message: textService.getError('otp'),
       });
     }
   };
 
+  const texts = textService.getScreenTexts('LinkingStep3');
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>
-         ¡Y listo! Comenzá a transformar tus cobros
-        </Text>
-        <Text style={styles.subtitle}>
-        Cuando lo vincules, tu uPOS podrá aceptar tarjetas, billeteras virtuales y apps bancarias.
-        </Text>
+        <Text style={styles.title}>{texts.title}</Text>
+        <Text style={styles.subtitle}>{texts.subtitle}</Text>
       </View>
       <View style={styles.footer}>
-        <Button title="Comenzar" onPress={handleContinue} />
+        <Button title={texts.button} onPress={handleContinue} />
       </View>
     </View>
   );

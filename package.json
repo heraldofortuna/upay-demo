@@ -17,11 +17,20 @@
     "web": "expo start --web",
     "lint": "eslint .",
     "test": "jest",
-    "install:all": "npm install && cd server && npm install"
+    "install:all": "npm install && cd server && npm install",
+    "start:sdui": "cross-env EXPO_PUBLIC_APP_MODE=sdui expo start --localhost",
+    "start:ota": "cross-env EXPO_PUBLIC_APP_MODE=ota expo start --localhost",
+    "dev:sdui": "concurrently \"npm run dev:bff\" \"npm run start:sdui\"",
+    "dev:ota": "npm run start:ota",
+    "dev:android:sdui": "adb reverse tcp:3000 tcp:3000 && adb reverse tcp:8081 tcp:8081 && concurrently \"npm run dev:bff\" \"cross-env EXPO_PUBLIC_APP_MODE=sdui expo start --android --localhost\"",
+    "dev:android:ota": "adb reverse tcp:8081 tcp:8081 && cross-env EXPO_PUBLIC_APP_MODE=ota expo start --android --localhost",
+    "build:ota": "cross-env EXPO_PUBLIC_APP_MODE=ota eas build --platform android",
+    "publish:ota": "cross-env EXPO_PUBLIC_APP_MODE=ota eas update --branch production"
   },
   "dependencies": {
     "expo": "~50.0.0",
     "expo-status-bar": "~1.11.1",
+    "expo-updates": "~0.24.0",
     "react": "18.2.0",
     "react-native": "0.73.6",
     "@react-navigation/native": "^6.1.9",
@@ -35,7 +44,8 @@
     "@types/react": "~18.2.45",
     "babel-plugin-module-resolver": "^5.0.0",
     "typescript": "^5.3.3",
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3"
   },
   "private": true
 }

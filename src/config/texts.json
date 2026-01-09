@@ -1,0 +1,53 @@
+{
+  "screens": {
+    "Initializing": {
+      "loaderText": "Iniciando el uPOS"
+    },
+    "LinkingStep1": {
+      "title": "¡Te damos la bienvenida a tu uPOS!",
+      "subtitle": "Llegó el nuevo aliado para tu negocio.\nDeslizá para conocer más.",
+      "button": "Comenzar"
+    },
+    "LinkingStep2": {
+      "title": "Vinculá una caja para operar",
+      "subtitle": "Solo tenés que ingresar el código de seguridad en una caja de tu comercio.",
+      "button": "Comenzar"
+    },
+    "LinkingStep3": {
+      "title": "¡Y listo! Comenzá a transformar tus cobros",
+      "subtitle": "Cuando lo vincules, tu uPOS podrá aceptar tarjetas, billeteras virtuales y apps bancarias.",
+      "button": "Comenzar"
+    },
+    "OtpScreen": {
+      "title": "Ingresá el código en la caja que quieras vincular",
+      "label": "Código de seguridad",
+      "timerPrefix": "El código vence en",
+      "timerSuffix": "segundo",
+      "timerSuffixPlural": "segundos",
+      "buttonContinue": "Continuar",
+      "buttonCancel": "Cancelar",
+      "loadingOtp": "---"
+    },
+    "Linking": {
+      "loaderText": "Estamos vinculando el uPOS a la caja"
+    },
+    "Waiting": {
+      "title": "Listo para el próximo cobro",
+      "subtitle": "Acercá una tarjeta de crédito o débito"
+    },
+    "ReadingCard": {
+      "loaderText": "Leyendo tarjeta..."
+    },
+    "Error": {
+      "title": "Error",
+      "defaultMessage": "Ha ocurrido un error. Por favor, intenta nuevamente.",
+      "buttonRetry": "Reintentar"
+    }
+  },
+  "errors": {
+    "initialize": "Error al inicializar el POS. Por favor, intenta nuevamente.",
+    "otp": "Error al obtener el código de seguridad. Por favor, intenta nuevamente.",
+    "link": "Error en la vinculación. Por favor, intenta nuevamente.",
+    "network": "Error de conexión. Por favor, verifica tu internet e intenta nuevamente."
+  }
+}

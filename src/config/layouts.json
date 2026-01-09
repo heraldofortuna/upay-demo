@@ -1,0 +1,361 @@
+{
+  "screens": {
+    "Initializing": {
+      "enabled": true,
+      "components": [
+        {
+          "type": "Loader",
+          "props": {
+            "text": "{{texts.loaderText}}"
+          },
+          "style": {
+            "flex": 1,
+            "justifyContent": "center",
+            "alignItems": "center"
+          }
+        }
+      ]
+    },
+    "LinkingStep1": {
+      "enabled": true,
+      "components": [
+        {
+          "type": "View",
+          "props": {
+            "style": "content"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.title}}",
+                "style": "title"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.subtitle}}",
+                "style": "subtitle"
+              }
+            }
+          ]
+        },
+        {
+          "type": "View",
+          "props": {
+            "style": "footer"
+          },
+          "children": [
+            {
+              "type": "Button",
+              "props": {
+                "title": "{{texts.button}}",
+                "onPress": "handleContinue",
+                "variant": "primary"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "LinkingStep2": {
+      "enabled": true,
+      "components": [
+        {
+          "type": "View",
+          "props": {
+            "style": "content"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.title}}",
+                "style": "title"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.subtitle}}",
+                "style": "subtitle"
+              }
+            }
+          ]
+        },
+        {
+          "type": "View",
+          "props": {
+            "style": "footer"
+          },
+          "children": [
+            {
+              "type": "Button",
+              "props": {
+                "title": "{{texts.button}}",
+                "onPress": "handleContinue",
+                "variant": "primary"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "LinkingStep3": {
+      "enabled": true,
+      "components": [
+        {
+          "type": "View",
+          "props": {
+            "style": "content"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.title}}",
+                "style": "title"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.subtitle}}",
+                "style": "subtitle"
+              }
+            }
+          ]
+        },
+        {
+          "type": "View",
+          "props": {
+            "style": "footer"
+          },
+          "children": [
+            {
+              "type": "Button",
+              "props": {
+                "title": "{{texts.button}}",
+                "onPress": "handleContinue",
+                "variant": "primary"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "OtpScreen": {
+      "enabled": true,
+      "components": [
+        {
+          "type": "View",
+          "props": {
+            "style": "content"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.title}}",
+                "style": "title"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.label}}",
+                "style": "label"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{state.isLoading ? texts.loadingOtp : state.otp}}",
+                "style": "otp",
+                "condition": "state.otp || state.isLoading"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{state.timerText}}",
+                "style": "timer",
+                "condition": "state.timeLeft !== undefined"
+              }
+            }
+          ]
+        },
+        {
+          "type": "View",
+          "props": {
+            "style": "footer"
+          },
+          "children": [
+            {
+              "type": "Button",
+              "props": {
+                "title": "{{texts.buttonContinue}}",
+                "onPress": "handleContinue",
+                "variant": "primary",
+                "disabled": "!state.otp || state.isLoading"
+              }
+            },
+            {
+              "type": "Button",
+              "props": {
+                "title": "{{texts.buttonCancel}}",
+                "onPress": "handleCancel",
+                "variant": "secondary",
+                "disabled": "state.isLoading"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "Linking": {
+      "enabled": true,
+      "components": [
+        {
+          "type": "Loader",
+          "props": {
+            "text": "{{texts.loaderText}}"
+          },
+          "style": {
+            "flex": 1,
+            "justifyContent": "center",
+            "alignItems": "center"
+          }
+        }
+      ]
+    },
+    "Waiting": {
+      "enabled": true,
+      "components": [
+        {
+          "type": "View",
+          "props": {
+            "style": "container"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.title}}",
+                "style": "title"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.subtitle}}",
+                "style": "subtitle"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "ReadingCard": {
+      "enabled": true,
+      "components": [
+        {
+          "type": "View",
+          "props": {
+            "style": "container"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.loaderText}}",
+                "style": "loaderText"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.title}}",
+                "style": "title",
+                "condition": "state.cardData"
+              }
+            },
+            {
+              "type": "View",
+              "props": {
+                "style": "cardInfo",
+                "condition": "state.cardData"
+              },
+              "children": [
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": "{{texts.labelType}} {{state.cardData?.cardType === 'credit' ? texts.cardTypeCredit : texts.cardTypeDebit}}",
+                    "style": "cardLabel"
+                  }
+                },
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": "{{texts.labelNumber}} {{state.cardData?.cardNumber}}",
+                    "style": "cardLabel"
+                  }
+                },
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": "{{texts.labelHolder}} {{state.cardData?.holderName}}",
+                    "style": "cardLabel"
+                  }
+                },
+                {
+                  "type": "Text",
+                  "props": {
+                    "text": "{{texts.labelExpiry}} {{state.cardData?.expiryDate}}",
+                    "style": "cardLabel"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "Error": {
+      "enabled": true,
+      "components": [
+        {
+          "type": "View",
+          "props": {
+            "style": "container"
+          },
+          "children": [
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{texts.title}}",
+                "style": "title"
+              }
+            },
+            {
+              "type": "Text",
+              "props": {
+                "text": "{{state.message || texts.defaultMessage}}",
+                "style": "message"
+              }
+            },
+            {
+              "type": "Button",
+              "props": {
+                "title": "{{texts.buttonRetry}}",
+                "onPress": "handleRetry",
+                "variant": "primary"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

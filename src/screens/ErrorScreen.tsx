@@ -4,6 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { Button } from '../components';
+import { textService } from '../services/textService';
 
 type ErrorScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -18,7 +19,8 @@ interface Props {
 }
 
 export const ErrorScreen: React.FC<Props> = ({ navigation, route }) => {
-  const message = route.params?.message || 'Ha ocurrido un error. Por favor, intenta nuevamente.';
+  const texts = textService.getScreenTexts('Error');
+  const message = route.params?.message || texts.defaultMessage;
 
   const handleRetry = () => {
     navigation.replace('Initializing');
@@ -28,11 +30,11 @@ export const ErrorScreen: React.FC<Props> = ({ navigation, route }) => {
     <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.icon}>⚠️</Text>
-        <Text style={styles.title}>Error</Text>
+        <Text style={styles.title}>{texts.title}</Text>
         <Text style={styles.message}>{message}</Text>
       </View>
       <View style={styles.footer}>
-        <Button title="Reintentar" onPress={handleRetry} />
+        <Button title={texts.buttonRetry} onPress={handleRetry} />
       </View>
     </View>
   );

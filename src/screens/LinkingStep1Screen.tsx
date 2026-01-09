@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { Button } from '../components';
+import { textService } from '../services/textService';
 
 type LinkingStep1ScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -18,19 +19,16 @@ export const LinkingStep1Screen: React.FC<Props> = ({ navigation }) => {
     navigation.navigate('LinkingStep2');
   };
 
+  const texts = textService.getScreenTexts('LinkingStep1');
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>
-         ¡Te damos la bienvenida a tu uPOS!
-        </Text>
-        <Text style={styles.subtitle}>
-          Llegó el nuevo aliado para tu negocio.
-          Deslizá para conocer más.
-        </Text>
+        <Text style={styles.title}>{texts.title}</Text>
+        <Text style={styles.subtitle}>{texts.subtitle}</Text>
       </View>
       <View style={styles.footer}>
-        <Button title="Comenzar" onPress={handleContinue} />
+        <Button title={texts.button} onPress={handleContinue} />
       </View>
     </View>
   );

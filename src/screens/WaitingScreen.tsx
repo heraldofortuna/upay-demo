@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Platform } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList, CardData } from '../types';
 import { useNfcDetection } from '../hooks/useNfcDetection';
+import { textService } from '../services/textService';
 
 type WaitingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -49,12 +50,12 @@ export const WaitingScreen: React.FC<Props> = ({ navigation }) => {
     });
   };
 
+  const texts = textService.getScreenTexts('Waiting');
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Listo para el próximo cobro</Text>
-      <Text style={styles.subtitle}>
-        Acercá una tarjeta de crédito o débito
-      </Text>
+      <Text style={styles.title}>{texts.title}</Text>
+      <Text style={styles.subtitle}>{texts.subtitle}</Text>
       {__DEV__ && (
         <Text style={styles.devHint} onPress={simulateCardDetection}>
           [DEV] Tocar para simular tarjeta

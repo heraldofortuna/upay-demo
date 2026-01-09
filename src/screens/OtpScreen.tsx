@@ -5,6 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { Button } from '../components';
 import { apiService } from '../services/api';
+import { textService } from '../services/textService';
 
 type OtpScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -31,7 +32,7 @@ export const OtpScreen: React.FC<Props> = ({ navigation }) => {
       setTimeLeft(response.expiresIn);
     } catch (error) {
       navigation.replace('Error', {
-        message: 'Error al obtener el código de seguridad. Por favor, intenta nuevamente.',
+        message: textService.getError('otp'),
       });
     } finally {
       setIsLoading(false);
@@ -64,29 +65,32 @@ export const OtpScreen: React.FC<Props> = ({ navigation }) => {
     navigation.navigate('LinkingStep1');
   };
 
+  const texts = textService.getScreenTexts('OtpScreen');
+  const timerText = timeLeft === 1 
+    ? `${texts.timerPrefix} ${timeLeft} ${texts.timerSuffix}`
+    : `${texts.timerPrefix} ${timeLeft} ${texts.timerSuffixPlural}`;
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Ingresá el código en la caja que quieras vincular</Text>
-        <Text style={styles.label}>Código de seguridad</Text>
+        <Text style={styles.title}>{texts.title}</Text>
+        <Text style={styles.label}>{texts.label}</Text>
         {isLoading ? (
-          <Text style={styles.otp}>---</Text>
+          <Text style={styles.otp}>{texts.loadingOtp}</Text>
         ) : (
           <Text style={styles.otp}>{otp}</Text>
         )}
-        <Text style={styles.timer}>
-          El código vence en {timeLeft} segundo{timeLeft !== 1 ? 's' : ''}
-        </Text>
+        <Text style={styles.timer}>{timerText}</Text>
       </View>
       <View style={styles.footer}>
         <Button
-          title="Continuar"
+          title={texts.buttonContinue}
           onPress={handleContinue}
           disabled={!otp || isLoading}
           style={styles.button}
         />
         <Button
-          title="Cancelar"
+          title={texts.buttonCancel}
           onPress={handleCancel}
           variant="secondary"
           disabled={isLoading}

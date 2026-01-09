@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { Button } from '../components';
+import { textService } from '../services/textService';
 
 type LinkingStep2ScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -18,18 +19,16 @@ export const LinkingStep2Screen: React.FC<Props> = ({ navigation }) => {
     navigation.navigate('LinkingStep3');
   };
 
+  const texts = textService.getScreenTexts('LinkingStep2');
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>
-         Vinculá una caja para operar
-        </Text>
-        <Text style={styles.subtitle}>
-          Solo tenés que ingresar el código de seguridad en una caja de tu comercio.
-        </Text>
+        <Text style={styles.title}>{texts.title}</Text>
+        <Text style={styles.subtitle}>{texts.subtitle}</Text>
       </View>
       <View style={styles.footer}>
-        <Button title="Comenzar" onPress={handleContinue} />
+        <Button title={texts.button} onPress={handleContinue} />
       </View>
     </View>
   );

@@ -39,8 +39,17 @@ class BffClient {
   ): Promise<ScreenDefinition> {
     try {
       const contextParam = encodeURIComponent(JSON.stringify(context));
+      // Añadir timestamp para evitar caché y obtener siempre la versión más reciente
+      const timestamp = Date.now();
       const response = await fetch(
-        `${this.baseUrl}/api/screens/${screenId}?context=${contextParam}`
+        `${this.baseUrl}/api/screens/${screenId}?context=${contextParam}&_t=${timestamp}`,
+        {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+          },
+        }
       );
 
       if (!response.ok) {
