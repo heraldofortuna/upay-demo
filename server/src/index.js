@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { screenRoutes } from './routes/screens.js';
 import { apiRoutes } from './routes/api.js';
 import { mockRoutes } from './routes/mocks.js';
+import { adminRoutes } from './routes/admin.js';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.get('/health', (req, res) => {
 // Routes
 app.use('/api/screens', screenRoutes);
 app.use('/api', apiRoutes);
+app.use('/api/admin', adminRoutes); // Rutas de administración para gestionar definiciones
 app.use('/mocks', mockRoutes);
 
 // Error handler
@@ -39,5 +41,6 @@ app.listen(PORT, () => {
   console.log(`🚀 BFF Server running on port ${PORT}`);
   console.log(`📱 SDUI API available at http://localhost:${PORT}/api/screens`);
   console.log(`🔌 Business API available at http://localhost:${PORT}/api`);
+  console.log(`🔧 Admin API available at http://localhost:${PORT}/api/admin`);
   console.log(`🎭 Mocks available at http://localhost:${PORT}/mocks`);
 });

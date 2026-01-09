@@ -1,7 +1,9 @@
+import { getDefinitionById } from '../models/ScreenDefinition.js';
 import { screenDefinitions } from '../definitions/screens.js';
 
 /**
  * Obtiene la definición de UI para una pantalla específica
+ * Primero intenta obtenerla de la base de datos, si no existe usa el archivo como fallback
  * @param {string} screenId - ID de la pantalla
  * @param {object} context - Contexto adicional (datos del usuario, estado, etc.)
  * @returns {Promise<object>} Definición de la pantalla en formato SDUI
@@ -10,7 +12,13 @@ export async function getScreenDefinition(screenId, context = {}) {
   // Simular delay de red
   await new Promise(resolve => setTimeout(resolve, 100));
 
-  const definition = screenDefinitions[screenId];
+  // Intentar obtener de la base de datos primero
+  let definition = await getDefinitionById(screenId);
+  
+  // Si no existe en BD, usar el archivo como fallback
+  if (!definition) {
+    definition = screenDefinitions[screenId];
+  }
 
   if (!definition) {
     throw new Error(`Pantalla ${screenId} no encontrada`);

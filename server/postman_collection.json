@@ -1,0 +1,240 @@
+{
+  "info": {
+    "name": "SDUI Admin API",
+    "description": "API de administración para gestionar pantallas SDUI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "value",
+        "value": "{{api_key}}",
+        "type": "string"
+      },
+      {
+        "key": "key",
+        "value": "X-API-Key",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api/admin",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "demo-admin-key-change-in-production",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Listar Pantallas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/screens",
+          "host": ["{{base_url}}"],
+          "path": ["screens"]
+        }
+      }
+    },
+    {
+      "name": "Obtener Pantalla",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/screens/:screenId",
+          "host": ["{{base_url}}"],
+          "path": ["screens", ":screenId"],
+          "variable": [
+            {
+              "key": "screenId",
+              "value": "Initializing"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Cambiar Texto (Buscar/Reemplazar)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"search\": \"Iniciando el uPOS\",\n  \"replace\": \"Sistema cargando...\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/screens/:screenId/text",
+          "host": ["{{base_url}}"],
+          "path": ["screens", ":screenId", "text"],
+          "variable": [
+            {
+              "key": "screenId",
+              "value": "Initializing"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Cambiar Texto (Por Path)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"path\": \"layout.children.0.props.children.1.props.text\",\n  \"value\": \"Nuevo texto aquí\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/screens/:screenId/text",
+          "host": ["{{base_url}}"],
+          "path": ["screens", ":screenId", "text"],
+          "variable": [
+            {
+              "key": "screenId",
+              "value": "Initializing"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Ver Todos los Textos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/screens/:screenId/texts",
+          "host": ["{{base_url}}"],
+          "path": ["screens", ":screenId", "texts"],
+          "variable": [
+            {
+              "key": "screenId",
+              "value": "Initializing"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Componentes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/screens/:screenId/components/:type",
+          "host": ["{{base_url}}"],
+          "path": ["screens", ":screenId", "components", ":type"],
+          "variable": [
+            {
+              "key": "screenId",
+              "value": "OtpScreen"
+            },
+            {
+              "key": "type",
+              "value": "button"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Eliminar Pantalla",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/screens/:screenId",
+          "host": ["{{base_url}}"],
+          "path": ["screens", ":screenId"],
+          "variable": [
+            {
+              "key": "screenId",
+              "value": "OldScreen"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Restaurar a Default",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/screens/:screenId/reset",
+          "host": ["{{base_url}}"],
+          "path": ["screens", ":screenId", "reset"],
+          "variable": [
+            {
+              "key": "screenId",
+              "value": "Initializing"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Duplicar Pantalla",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"newId\": \"InitializingV2\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/screens/:screenId/duplicate",
+          "host": ["{{base_url}}"],
+          "path": ["screens", ":screenId", "duplicate"],
+          "variable": [
+            {
+              "key": "screenId",
+              "value": "Initializing"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

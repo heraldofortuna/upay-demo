@@ -8,7 +8,7 @@
     "start:bff": "cd server && npm start",
     "dev:bff": "cd server && npm run dev",
     "dev": "concurrently \"npm run dev:bff\" \"npm run start\"",
-    "dev:android": "concurrently \"npm run dev:bff\" \"expo start --android --localhost\"",
+    "dev:android": "adb reverse tcp:3000 tcp:3000 && adb reverse tcp:8081 tcp:8081 && concurrently \"npm run dev:bff\" \"expo start --android --localhost\"",
     "android": "expo start --android --localhost",
     "android:usb": "adb reverse tcp:8081 tcp:8081 && expo start --localhost --android",
     "android:pos": "adb reverse tcp:3000 tcp:3000 && adb reverse tcp:8081 tcp:8081 && npm run dev",
